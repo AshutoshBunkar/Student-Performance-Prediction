@@ -18,7 +18,7 @@ graph TD
 ```
 
 *   **Entry Points**: User queries sent to `AgentEngineApp.async_stream_query()` and routed through `shopping_assistant_workflow`.
-*   **Trust Boundaries**: 
+*   **Trust Boundaries**:
     *   Boundary between the external User Client and the Agent App.
     *   Boundary between the LLM Agent (non-deterministic) and the python tool logic (deterministic).
 *   **Data Storage**: In-memory `DISCOUNT_STORE` dictionary simulating a database.
@@ -35,7 +35,7 @@ graph TD
 
 ### 2. Tampering (T)
 *   **Threat**: Manipulation of the `DISCOUNT_STORE` state or parameters.
-*   **Assessment**: 
+*   **Assessment**:
     *   `DISCOUNT_STORE` is stored as an in-memory dictionary. It lacks transactional safety, database locks, or concurrency isolation. Under concurrent requests, two threads could redeem the same code simultaneously (Race Condition / Double Redemption).
     *   Users can manipulate parameters (`code`, `user_id`) via direct prompt injection.
 *   **Severity**: **Medium**

@@ -24,7 +24,7 @@ os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "False"
 
 class CustomGemini(Gemini):
     # Declare api_key field so it's a Pydantic field
-    api_key: str = "AIzaSyD-mock-key-value-12345"
+    api_key: str = Field(default_factory=lambda: os.environ.get("GEMINI_API_KEY", "mock-key-value-12345"))
 
     @cached_property
     def api_client(self) -> Client:
@@ -39,9 +39,10 @@ class CustomGemini(Gemini):
         return Client(api_key=self.api_key, vertexai=False)
 
 
-# Simulated vulnerability: Unsafe hardcoded API key introduced in initial draft code
+# Remediation: Load API key from environment variable to avoid hardcoded credentials
 model = CustomGemini(
-    model="gemini-3.1-flash-lite", api_key="AIzaSyD-mock-key-value-12345"
+    model="gemini-3.1-flash-lite",
+    api_key=os.environ.get("GEMINI_API_KEY", "mock-key-value-12345")
 )
 
 # In-memory discount redemption store (simulating database state)
