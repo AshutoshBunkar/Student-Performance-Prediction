@@ -38,6 +38,7 @@ class AgentEngineApp(AdkApp):
         logging.basicConfig(level=logging.INFO)
         if os.environ.get("GOOGLE_CLOUD_PROJECT") == "simulated-project":
             import unittest.mock
+
             logging_client = unittest.mock.MagicMock()
             self.logger = logging_client.logger(__name__)
         else:
