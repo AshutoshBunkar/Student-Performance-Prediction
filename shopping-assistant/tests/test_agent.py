@@ -25,7 +25,7 @@ class MockAioModels:
                 )
             )
             return types.GenerateContentResponse(candidates=[candidate])
-        
+
         idx = min(self.call_count - 1, len(self.responses) - 1)
         resp = self.responses[idx]
         if callable(resp):
@@ -44,7 +44,7 @@ class MockAio:
 
 class MockClient:
     _models_instance = None
-    
+
     def __init__(self, *args, **kwargs):
         self.aio = MockAio(MockClient._models_instance)
         self.vertexai = False
@@ -76,7 +76,7 @@ def run_agent_workflow(prompt_text: str, user_id: str = "test_user") -> list[str
             run_config=RunConfig(streaming_mode=StreamingMode.SSE),
         )
     )
-    
+
     responses = []
     for event in events:
         if event.content and event.content.parts:
@@ -88,7 +88,7 @@ def run_agent_workflow(prompt_text: str, user_id: str = "test_user") -> list[str
 def test_agent_redeem_discount_success(mock_genai_client):
     # Reset store
     DISCOUNT_STORE["WELCOME50"] = False
-    
+
     # 1. First response: call redeem_discount tool
     func_call = types.FunctionCall(
         name="redeem_discount",
@@ -101,7 +101,7 @@ def test_agent_redeem_discount_success(mock_genai_client):
         )
     )
     resp1 = types.GenerateContentResponse(candidates=[candidate1])
-    
+
     # 2. Second response: final confirmation
     candidate2 = types.Candidate(
         content=types.Content(
@@ -110,11 +110,11 @@ def test_agent_redeem_discount_success(mock_genai_client):
         )
     )
     resp2 = types.GenerateContentResponse(candidates=[candidate2])
-    
+
     mock_genai_client.responses = [resp1, resp2]
-    
+
     results = run_agent_workflow("Redeem WELCOME50 for user_123", user_id="user_123")
-    
+
     # Verify tool execution & state change
     assert DISCOUNT_STORE["WELCOME50"] is True
     assert any("successfully redeemed" in r.lower() for r in results)
@@ -131,7 +131,7 @@ def test_agent_redeem_discount_invalid_code(mock_genai_client):
         )
     )
     resp1 = types.GenerateContentResponse(candidates=[candidate1])
-    
+
     candidate2 = types.Candidate(
         content=types.Content(
             role="model",
@@ -139,18 +139,18 @@ def test_agent_redeem_discount_invalid_code(mock_genai_client):
         )
     )
     resp2 = types.GenerateContentResponse(candidates=[candidate2])
-    
+
     mock_genai_client.responses = [resp1, resp2]
-    
+
     results = run_agent_workflow("Redeem INVALID99 for user_123", user_id="user_123")
-    
+
     # Verify final response reports the failure
     assert any("invalid discount code" in r.lower() for r in results)
 
 def test_agent_redeem_discount_already_redeemed(mock_genai_client):
     # Set to already redeemed
     DISCOUNT_STORE["WELCOME50"] = True
-    
+
     func_call = types.FunctionCall(
         name="redeem_discount",
         args={"code": "WELCOME50", "user_id": "user_123"}
@@ -162,7 +162,7 @@ def test_agent_redeem_discount_already_redeemed(mock_genai_client):
         )
     )
     resp1 = types.GenerateContentResponse(candidates=[candidate1])
-    
+
     candidate2 = types.Candidate(
         content=types.Content(
             role="model",
@@ -170,11 +170,11 @@ def test_agent_redeem_discount_already_redeemed(mock_genai_client):
         )
     )
     resp2 = types.GenerateContentResponse(candidates=[candidate2])
-    
+
     mock_genai_client.responses = [resp1, resp2]
-    
+
     results = run_agent_workflow("Redeem WELCOME50 for user_123", user_id="user_123")
-    
+
     # Verify final response reports already redeemed (represented by the second function call response)
     # The runner executes the tool, gets "Error: Discount code has already been redeemed.", and submits it back.
     # We verify the mock client was called twice
@@ -193,7 +193,7 @@ def test_agent_redeem_discount_already_redeemed(mock_genai_client):
 def test_agent_redeem_discount_guest_user(mock_genai_client):
     # Reset store
     DISCOUNT_STORE["WELCOME50"] = False
-    
+
     func_call = types.FunctionCall(
         name="redeem_discount",
         args={"code": "WELCOME50", "user_id": "guest_123"}
@@ -205,7 +205,7 @@ def test_agent_redeem_discount_guest_user(mock_genai_client):
         )
     )
     resp1 = types.GenerateContentResponse(candidates=[candidate1])
-    
+
     candidate2 = types.Candidate(
         content=types.Content(
             role="model",
@@ -213,11 +213,11 @@ def test_agent_redeem_discount_guest_user(mock_genai_client):
         )
     )
     resp2 = types.GenerateContentResponse(candidates=[candidate2])
-    
+
     mock_genai_client.responses = [resp1, resp2]
-    
+
     results = run_agent_workflow("Redeem WELCOME50 for guest_123", user_id="guest_123")
-    
+
     # Verify store remains False
     assert DISCOUNT_STORE["WELCOME50"] is False
     assert mock_genai_client.call_count == 2
@@ -234,7 +234,7 @@ def test_agent_redeem_discount_guest_user(mock_genai_client):
 def test_agent_redeem_discount_empty_user(mock_genai_client):
     # Reset store
     DISCOUNT_STORE["WELCOME50"] = False
-    
+
     func_call = types.FunctionCall(
         name="redeem_discount",
         args={"code": "WELCOME50", "user_id": ""}
@@ -246,7 +246,7 @@ def test_agent_redeem_discount_empty_user(mock_genai_client):
         )
     )
     resp1 = types.GenerateContentResponse(candidates=[candidate1])
-    
+
     candidate2 = types.Candidate(
         content=types.Content(
             role="model",
@@ -254,11 +254,11 @@ def test_agent_redeem_discount_empty_user(mock_genai_client):
         )
     )
     resp2 = types.GenerateContentResponse(candidates=[candidate2])
-    
+
     mock_genai_client.responses = [resp1, resp2]
-    
+
     results = run_agent_workflow("Redeem WELCOME50 without user ID", user_id="")
-    
+
     # Verify store remains False
     assert DISCOUNT_STORE["WELCOME50"] is False
     assert mock_genai_client.call_count == 2
