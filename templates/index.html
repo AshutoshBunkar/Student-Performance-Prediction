@@ -1,168 +1,309 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Performance Predictor & Advisory System</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #eef2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px 0; }
-        .container { background: white; padding: 35px; border-radius: 12px; box-shadow: 0px 8px 24px rgba(0,0,0,0.08); width: 480px; }
-        h2 { text-align: center; color: #1a252f; margin-bottom: 5px; font-weight: 700; }
-        p.subtitle { text-align: center; color: #7f8c8d; font-size: 14px; margin-top: 0; margin-bottom: 25px; }
-        .form-group { margin-bottom: 18px; }
-        label { display: block; font-weight: 600; margin-bottom: 6px; color: #2c3e50; font-size: 14px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #dcdfe6; border-radius: 6px; box-sizing: border-box; font-size: 14px; transition: border-color 0.2s; }
-        input:focus, select:focus { border-color: #3498db; outline: none; }
-        button { width: 100%; padding: 12px; background-color: #2980b9; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
-        button:hover { background-color: #1f618d; }
-        
-        .result-box { margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 8px; border-left: 5px solid #27ae60; }
-        .score-title { font-size: 14px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; }
-        .score-val { font-size: 28px; font-weight: bold; color: #27ae60; margin: 5px 0 10px 0; }
-        .risk-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; background-color: #e8f8f5; color: #16a085; }
-        
-        .rec-section { margin-top: 15px; }
-        .rec-title { font-size: 13px; font-weight: bold; color: #34495e; margin-bottom: 8px; text-transform: uppercase; }
-        .rec-list { margin: 0; padding-left: 20px; font-size: 13px; color: #555; }
-        .rec-list li { margin-bottom: 5px; }
+        * {
+            box-sizing: border-box;
+        }
 
-        .chart-box { margin-top: 25px; padding: 15px; background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; }
-        .chart-title { font-size: 13px; font-weight: bold; color: #2c3e50; text-transform: uppercase; margin-bottom: 12px; text-align: center; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.08);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1a252f;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dcdfe6;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #1f618d;
+        }
+
+        .result-box {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 5px solid #27ae60;
+        }
+
+        .score-title {
+            font-size: 14px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        .score-val {
+            font-size: 28px;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 5px 0 10px 0;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            background-color: #e8f8f5;
+            color: #16a085;
+        }
+
+        .rec-section {
+            margin-top: 15px;
+        }
+
+        .rec-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #34495e;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .rec-list {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .rec-list li {
+            margin-bottom: 5px;
+        }
+
+        .chart-box {
+            margin-top: 25px;
+            padding: 15px;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .chart-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            text-align: center;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>Student Performance Predictor</h2>
-    <p class="subtitle">Machine Learning Based Academic Performance & Risk Advisory</p>
-    
-    <form action="/" method="POST">
-        <div class="form-group">
-            <label>Hours Studied (per day):</label>
-            <input type="number" step="0.1" min="0" max="24" name="hours_studied" placeholder="e.g. 7.0" required>
-        </div>
-        
-        <div class="form-group">
-            <label>Previous Scores (0-100):</label>
-            <input type="number" step="0.1" min="0" max="100" name="previous_scores" placeholder="e.g. 85.0" required>
-        </div>
+    <div class="container">
+        <h2>Student Performance Predictor</h2>
+        <p class="subtitle">Machine Learning Based Academic Performance & Risk Advisory</p>
 
-        <div class="form-group">
-            <label>Sleep Hours (per night):</label>
-            <input type="number" step="0.1" min="0" max="24" name="sleep_hours" placeholder="e.g. 7.5" required>
-        </div>
+        <form action="/" method="POST">
+            <div class="form-group">
+                <label>Hours Studied (per day):</label>
+                <input type="number" step="0.1" min="0" max="24" name="hours_studied" placeholder="e.g. 7.0" required>
+            </div>
 
-        <div class="form-group">
-            <label>Sample Question Papers Practiced:</label>
-            <input type="number" min="0" max="50" name="papers_practiced" placeholder="e.g. 4" required>
-        </div>
+            <div class="form-group">
+                <label>Previous Scores (0-100):</label>
+                <input type="number" step="0.1" min="0" max="100" name="previous_scores" placeholder="e.g. 85.0"
+                    required>
+            </div>
 
-        <div class="form-group">
-            <label>Extracurricular Activities:</label>
-            <select name="extracurriculars">
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-            </select>
-        </div>
+            <div class="form-group">
+                <label>Sleep Hours (per night):</label>
+                <input type="number" step="0.1" min="0" max="24" name="sleep_hours" placeholder="e.g. 7.5" required>
+            </div>
 
-        <button type="submit">Predict Performance & Generate Advisory</button>
-    </form>
+            <div class="form-group">
+                <label>Sample Question Papers Practiced:</label>
+                <input type="number" min="0" max="50" name="papers_practiced" placeholder="e.g. 4" required>
+            </div>
 
-    {% if prediction is not none %}
+            <div class="form-group">
+                <label>Extracurricular Activities:</label>
+                <select name="extracurriculars">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+
+            <button type="submit">Predict Performance & Generate Advisory</button>
+        </form>
+
+        {% if prediction is not none %}
         <div class="result-box">
             <p class="score-title">Predicted Performance Index</p>
-            <div class="score-val">{{ prediction }} <span style="font-size: 16px; font-weight: normal; color: #7f8c8d;">/ 100</span></div>
-            
+            <div class="score-val">{{ prediction }} <span
+                    style="font-size: 16px; font-weight: normal; color: #7f8c8d;">/ 100</span></div>
+
             {% if risk %}
-                <div class="risk-badge">Status: {{ risk }}</div>
+            <div class="risk-badge">Status: {{ risk }}</div>
             {% endif %}
 
             {% if recommendations %}
-                <div class="rec-section">
-                    <p class="rec-title">Academic Recommendations:</p>
-                    <ul class="rec-list">
-                        {% for rec in recommendations %}
-                            <li>{{ rec }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+            <div class="rec-section">
+                <p class="rec-title">Academic Recommendations:</p>
+                <ul class="rec-list">
+                    {% for rec in recommendations %}
+                    <li>{{ rec }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
             {% endif %}
         </div>
 
         {% if distribution_data %}
-            <div class="result-box" style="margin-top: 15px; border-left-color: #8e44ad; background: #fdfefe;">
-                <p class="score-title" style="color: #8e44ad;">Dataset Percentile Standing</p>
-                <div style="font-size: 20px; font-weight: bold; color: #2c3e50; margin: 5px 0;">
-                    Higher than <span style="color: #8e44ad;">{{ distribution_data.percentile }}%</span> of Students
-                </div>
-                <div class="risk-badge" style="background-color: #f4ecf7; color: #8e44ad;">
-                    Benchmark: Dataset Mean Score is {{ distribution_data.dataset_mean }}
-                </div>
+        <div class="result-box" style="margin-top: 15px; border-left-color: #8e44ad; background: #fdfefe;">
+            <p class="score-title" style="color: #8e44ad;">Dataset Percentile Standing</p>
+            <div style="font-size: 20px; font-weight: bold; color: #2c3e50; margin: 5px 0;">
+                Higher than <span style="color: #8e44ad;">{{ distribution_data.percentile }}%</span> of Students
             </div>
-
-            <div class="chart-box">
-                <div class="chart-title">Score Distribution Across 10,000 Historical Students</div>
-                <canvas id="distChart"></canvas>
+            <div class="risk-badge" style="background-color: #f4ecf7; color: #8e44ad;">
+                Benchmark: Dataset Mean Score is {{ distribution_data.dataset_mean }}
             </div>
+        </div>
 
-            <script>
-                const distData = {{ distribution_data | tojson }};
-                const ctx = document.getElementById('distChart').getContext('2d');
-                
+        <div class="chart-box">
+            <div class="chart-title">Score Distribution Across 10,000 Historical Students</div>
+            <canvas id="distChart"></canvas>
+        </div>
+
+        <div id="dist-data-container" data-dist='{{ distribution_data | tojson | safe }}'></div>
+        <script>
+            const dataContainer = document.getElementById('dist-data-container');
+            const distData = dataContainer ? JSON.parse(dataContainer.dataset.dist) : null;
+            const ctx = document.getElementById('distChart').getContext('2d');
+
+            if (distData) {
                 // Highlight the bin containing the predicted score
                 const backgroundColors = distData.bins.map((_, i) => i === distData.active_bin_index ? '#e67e22' : 'rgba(52, 152, 219, 0.5)');
                 const borderColors = distData.bins.map((_, i) => i === distData.active_bin_index ? '#d35400' : '#2980b9');
 
                 new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: distData.bins,
-                        datasets: [{
-                            label: 'Student Count',
-                            data: distData.counts,
-                            backgroundColor: backgroundColors,
-                            borderColor: borderColors,
-                            borderWidth: 1.5,
-                            borderRadius: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    title: function(items) {
-                                        return 'Score Range: ' + items[0].label;
-                                    },
-                                    label: function(context) {
-                                        let text = context.parsed.y + ' Students';
-                                        if (context.dataIndex === distData.active_bin_index) {
-                                            text += ' ★ Your Score Range (' + distData.predicted_score + ')';
-                                        }
-                                        return text;
+                type: 'bar',
+                data: {
+                    labels: distData.bins,
+                    datasets: [{
+                        label: 'Student Count',
+                        data: distData.counts,
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: 1.5,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: function (items) {
+                                    return 'Score Range: ' + items[0].label;
+                                },
+                                label: function (context) {
+                                    let text = context.parsed.y + ' Students';
+                                    if (context.dataIndex === distData.active_bin_index) {
+                                        text += ' ★ Your Score Range (' + distData.predicted_score + ')';
                                     }
+                                    return text;
                                 }
                             }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Performance Index Ranges' }
                         },
-                        scales: {
-                            x: {
-                                title: { display: true, text: 'Performance Index Ranges' }
-                            },
-                            y: {
-                                title: { display: true, text: 'Number of Students' },
-                                beginAtZero: true
-                            }
+                        y: {
+                            title: { display: true, text: 'Number of Students' },
+                            beginAtZero: true
                         }
                     }
-                });
-            </script>
+                }
+            });
+            }
+        </script>
         {% endif %}
-    {% endif %}
-</div>
+        {% endif %}
+    </div>
 
 </body>
-</html>
 
-
+</html>
