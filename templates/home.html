@@ -1,130 +1,223 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <link rel="stylesheet" type="text/css" href="static\styles.css">
-    <title>Student Performance Prediction</title>
+    <meta charset="UTF-8">
+
+    <title>Student Academic Risk Prediction</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
 <body>
-    <div class="login">
-   
-       <form action="{{ url_for('predict_datapoint')}}" method="post">
+
+<div class="login">
+
+    <form action="/" method="POST">
+
         <h1>
-            <legend>Student Performance Prediction</legend>
+            Student Academic Risk Prediction
         </h1>
 
-
         <div class="mb-3">
-            <label class="form-label">Gender</label><br>
-            <select class="form-control" name="gender" placeholder="Enter you Gender" required>
-                <option class="placeholder" selected disabled value="">Select your Gender</option>
-                <option value="male">
-                    Male
-                </option>
-                <option value="female">
-                    Female
-                </option>
-            </select>
+
+            <label>
+                Attendance Percentage
+            </label>
+
+            <input
+                class="form-control"
+                type="number"
+                name="attendance"
+                min="0"
+                max="100"
+                step="0.1"
+                placeholder="e.g. 75"
+                required
+            >
+
         </div>
 
 
         <div class="mb-3">
-            <label class="form-label">Race or Ethnicity</label><br>
-            <select class="form-control" name="ethnicity" placeholder="Enter you ethnicity" required>
-                <option class="placeholder" selected disabled value="">Select Ethnicity</option>
-                <option value="group A">
-                    GROUP - A
-                </option>
-                <option value="group B">
-                    GROUP - B
-                </option>
-                <option value="group C">
-                    GROUP - C
-                </option>
-                <option value="group D">
-                    GROUP - D
-                </option>
-                <option value="group E">
-                    GROUP - E
-                </option>
-            </select>
+
+            <label>
+                Previous GPA
+            </label>
+
+            <input
+                class="form-control"
+                type="number"
+                name="previous_gpa"
+                min="0"
+                max="10"
+                step="0.01"
+                placeholder="e.g. 7.2"
+                required
+            >
+
         </div>
 
 
         <div class="mb-3">
-            <label class="form-label">Parental Level of Education</label>
-            <select class="form-control" name="parental_level_of_education"
-                placeholder="Enter you Parent Education" required>
-                <option class="placeholder" selected disabled value="">Select Parent Education</option>
-                <option value="associate's degree">
-                    Associate's Degree
-                </option>
-                <option value="bachelor's degree">
-                    Bachelor's Degree
-                </option>
-                <option value="high school">
-                    High School
-                </option>
-                <option value="master's degree">
-                    Master's Degree
-                </option>
-                <option value="some college">
-                    Some College
-                </option>
-                <option value="some high school">
-                    Some High School
-                </option>
-            </select>
+
+            <label>
+                Study Hours Per Day
+            </label>
+
+            <input
+                class="form-control"
+                type="number"
+                name="study_hours"
+                min="0"
+                max="24"
+                step="0.1"
+                placeholder="e.g. 3.5"
+                required
+            >
+
         </div>
 
 
         <div class="mb-3">
-            <label class="form-label">Lunch Type</label><br>
-            <select class="form-control" name="lunch" placeholder="Enter you Lunch" required>
-                <option class="placeholder" selected disabled value="">Select Lunch Type</option>
-                <option value="free/reduced">
-                    Free / Reduced
-                </option>
-                <option value="standard">
-                    Standard
-                </option>
-            </select>
+
+            <label>
+                Assignment Completion (%)
+            </label>
+
+            <input
+                class="form-control"
+                type="number"
+                name="assignment_completion"
+                min="0"
+                max="100"
+                step="0.1"
+                placeholder="e.g. 80"
+                required
+            >
+
         </div>
 
 
         <div class="mb-3">
-            <label class="form-label">Test preparation Course</label>
-            <select class="form-control" name="test_preparation_course" placeholder="Enter you Course"
-                required>
-                <option class="placeholder" selected disabled value="">Select Test_course</option>
-                <option value="none">
-                    None
-                </option>
-                <option value="completed">
-                    Completed
-                </option>
-            </select>
+
+            <label>
+                Internal Marks
+            </label>
+
+            <input
+                class="form-control"
+                type="number"
+                name="internal_marks"
+                min="0"
+                max="100"
+                step="0.1"
+                placeholder="e.g. 65"
+                required
+            >
+
         </div>
 
 
         <div class="mb-3">
-            <label class="form-label">Writing Score out of 100</label>
-            <input class="form-control" type="number" name="reading_score"
-                placeholder="Enter your Reading score" min='0' max='100' />
+
+            <label>
+                Test Average
+            </label>
+
+            <input
+                class="form-control"
+                type="number"
+                name="test_average"
+                min="0"
+                max="100"
+                step="0.1"
+                placeholder="e.g. 70"
+                required
+            >
+
         </div>
 
 
         <div class="mb-3">
-            <label class="form-label">Reading Score out of 100</label>
-            <input class="form-control" type="number" name="writing_score"
-                placeholder="Enter your Reading Score" min='0' max='100' />
+
+            <label>
+                Previous Backlogs
+            </label>
+
+            <input
+                class="form-control"
+                type="number"
+                name="previous_backlogs"
+                min="0"
+                max="20"
+                placeholder="e.g. 1"
+                required
+            >
+
         </div>
 
+
         <div class="mb-3">
-            <input class="btn btn-primary" type="submit" value="Predict your Maths Score" required />
+
+            <input
+                class="btn btn-primary"
+                type="submit"
+                value="Predict Academic Risk"
+            >
+
         </div>
+
     </form>
-    <h2>
-       The Prediction is {{results}}
-    </h2>
-   <body>
+
+
+    {% if predicted_gpa is not none %}
+
+    <div class="result">
+
+        <h2>
+            Prediction Result
+        </h2>
+
+        <p>
+            Predicted Final GPA:
+            <strong>{{ predicted_gpa }} / 10</strong>
+        </p>
+
+        <p>
+            Risk Level:
+            <strong>{{ risk }}</strong>
+        </p>
+
+        <h3>
+            Recommendations
+        </h3>
+
+        <ul>
+
+            {% for recommendation in recommendations %}
+
+                <li>{{ recommendation }}</li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+    {% endif %}
+
+
+    {% if error %}
+
+        <p class="error">
+            {{ error }}
+        </p>
+
+    {% endif %}
+
+</div>
+
+</body>
+
 </html>
