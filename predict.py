@@ -1,34 +1,26 @@
 from src.pipeline.predict_pipeline import StudentPrediction
 
+# Sample student data matching dataset schema
 student = {
-    "attendance": 68,
-    "previous_gpa": 6.4,
-    "study_hours": 2.0,
-    "assignment_completion": 55,
-    "internal_marks": 52,
-    "test_average": 54,
-    "previous_backlogs": 2
+    "Hours Studied": 7.0,
+    "Previous Scores": 82.0,
+    "Extracurricular Activities": "Yes",
+    "Sleep Hours": 7.5,
+    "Sample Question Papers Practiced": 4.0
 }
 
 predictor = StudentPrediction()
 
-predicted_gpa = predictor.predict(student)
+predicted_score = predictor.predict(student)
+risk = predictor.get_risk(predicted_score)
+recommendations = predictor.get_recommendations(student, predicted_score)
 
-risk = predictor.get_risk(predicted_gpa)
-
-recommendations = predictor.get_recommendations(
-    student,
-    predicted_gpa
-)
-
-print("\n==============================")
-print("STUDENT PERFORMANCE REPORT")
-print("==============================")
-
-print(f"Predicted GPA : {predicted_gpa:.2f}")
-print(f"Risk Level    : {risk}")
-
-print("\nRecommendations:")
-
+print("\n==========================================")
+print("       STUDENT PERFORMANCE REPORT         ")
+print("==========================================")
+print(f"Predicted Performance Index : {predicted_score:.2f} / 100")
+print(f"Academic Risk Level         : {risk}")
+print("\nPersonalized Recommendations:")
 for recommendation in recommendations:
     print(" -", recommendation)
+print("==========================================\n")

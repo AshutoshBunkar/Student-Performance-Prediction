@@ -1,12 +1,31 @@
+import sys
+from src.logger import logging
+from src.exception import CustomException
 from src.components.Data_ingestion import DataIngestion
 from src.components.Data_transformation import DataTransformation
 from src.components.Model_trainer import ModelTrainer
 
-obj=DataIngestion()
-train_data,test_data=obj.initiate_data_ingestion()
+if __name__ == "__main__":
+    try:
+        logging.info(">>> Starting Training Pipeline Execution <<<")
+        
+        # 1. Data Ingestion
+        ingestion = DataIngestion()
+        train_data_path, test_data_path = ingestion.initiate_data_ingestion()
 
-data_transformation=DataTransformation()
-train_arr,test_arr,_=data_transformation.initiate_data_transformation(train_data,test_data)
+        # 2. Data Transformation
+        transformation = DataTransformation()
+        train_arr, test_arr, preprocessor_path = transformation.initiate_data_transformation(
+            train_data_path, test_data_path
+        )
 
-modeltrainer=ModelTrainer()
-print(modeltrainer.initiate_model_trainer(train_arr,test_arr))
+        # 3. Model Trainer
+        trainer = ModelTrainer()
+        r2_score = trainer.initiate_model_trainer(train_arr, test_arr, preprocessor_path)
+
+        logging.info(f">>> Training Pipeline Completed Successfully with Best Model R2 Score: {r2_score:.4f} <<<")
+
+    except Exception as e:
+        logging.error("Exception occurred in Training Pipeline execution")
+        raise CustomException(e, sys)
+
