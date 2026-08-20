@@ -19,11 +19,11 @@ list_of_files = [
     "src/pipeline/Training_pipeline.py",
     "static/styles.css",
     "templates/home.html",
-    ".gitignore",
     "app.py",
+    ".gitignore",
     "Dockerfile",
-    "README.md",
     "requirements.txt",
+    "README.md",
     "setup.py"]
 
 for filepath in list_of_files:
