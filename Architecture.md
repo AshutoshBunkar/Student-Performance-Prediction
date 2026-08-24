@@ -32,22 +32,22 @@ The **Student Performance Predictor** is an end-to-end Machine Learning web appl
 ### D. Backend Web Server (`app.py`)
 * **Framework:** Flask
 * **Request Lifecycle:**
-  1. Captures HTTP `POST` requests containing raw form inputs from the frontend.
-  2. Constructs a structured Pandas DataFrame from the input features.
-  3. Loads the serialized pipeline from `artifacts/model.pkl`.
-  4. Passes the DataFrame directly into the pipeline to execute preprocessing and prediction atomically.
-  5. Computes a dynamic sensitivity trend dataset (`Performance Index vs. Daily Study Hours`) for the student profile.
+  1. Captures HTTP `POST` requests containing form inputs from the frontend.
+  2. Converts qualitative dropdown inputs ("Previous Academic Standing" and "Exam Practice Level") into model-compatible numerical representative scores.
+  3. Constructs a structured Pandas DataFrame matching the 5-feature dataset schema (`Hours Studied`, `Previous Scores`, `Sleep Hours`, `Sample Question Papers Practiced`, `Extracurricular Activities`).
+  4. Loads the serialized pipeline from `artifacts/model.pkl`.
+  5. Passes the DataFrame directly into the pipeline to execute preprocessing and prediction atomically.
   6. Computes the student's exact percentile rank relative to all 10,000 historical dataset records.
-  7. Renders the predicted performance index, academic risk classification, advisory recommendations, percentile standing, and historical distribution histogram back to the user interface.
+  7. Renders the predicted performance index, academic risk classification, advisory recommendations, percentile standing, historical distribution histogram, and preserved form selection state back to the user interface.
 
 ### E. Frontend User Interface (`templates/index.html`)
 * **Design:** Responsive, card-centered HTML5 form styled with clean CSS and integrated Chart.js visualization.
-* **Input Parameters Collected:**
-  * Hours Studied (daily)
-  * Previous Scores (0-100 scale)
-  * Sleep Hours (nightly)
-  * Sample Question Papers Practiced
-  * Extracurricular Activities (Binary Selection: Yes/No)
+* **User-Friendly Input Selectors (No exact tracking needed):**
+  * **Hours Studied (daily)**: Continuous numeric input (0–24 hrs).
+  * **Previous Academic Standing**: Qualitative band selector (*High Standing 85-100%*, *Above Average 70-84%*, *Average 55-69%*, *Needs Support <55%*).
+  * **Sleep Hours (nightly)**: Continuous numeric input (0–24 hrs).
+  * **Exam Practice Level**: Qualitative category selector (*High Practice 5+*, *Moderate Practice 2-4*, *Minimal/None 0-1*).
+  * **Extracurricular Activities**: Binary selection (Yes/No).
 * **Interactive Output Visualizations:**
   * Predicted Performance Index Score (0–100)
   * Academic Risk Status Badge

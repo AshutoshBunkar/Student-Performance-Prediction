@@ -176,30 +176,38 @@
         <form action="/" method="POST">
             <div class="form-group">
                 <label>Hours Studied (per day):</label>
-                <input type="number" step="0.1" min="0" max="24" name="hours_studied" placeholder="e.g. 7.0" required>
+                <input type="number" step="0.1" min="0" max="24" name="hours_studied" value="{{ form_state.hours_studied if form_state else '7.0' }}" placeholder="e.g. 7.0" required>
             </div>
 
             <div class="form-group">
-                <label>Previous Scores (0-100):</label>
-                <input type="number" step="0.1" min="0" max="100" name="previous_scores" placeholder="e.g. 85.0"
-                    required>
+                <label>Previous Academic Standing (No exact score tracking needed):</label>
+                <select name="previous_scores" required>
+                    <option value="high" {% if form_state and form_state.previous_scores == 'high' %}selected{% endif %}>High Academic Standing (85 - 100%)</option>
+                    <option value="above_average" {% if not form_state or form_state.previous_scores == 'above_average' %}selected{% endif %}>Above Average Standing (70 - 84%)</option>
+                    <option value="average" {% if form_state and form_state.previous_scores == 'average' %}selected{% endif %}>Average Standing (55 - 69%)</option>
+                    <option value="below_average" {% if form_state and form_state.previous_scores == 'below_average' %}selected{% endif %}>Needs Academic Support (&lt; 55%)</option>
+                </select>
             </div>
 
             <div class="form-group">
                 <label>Sleep Hours (per night):</label>
-                <input type="number" step="0.1" min="0" max="24" name="sleep_hours" placeholder="e.g. 7.5" required>
+                <input type="number" step="0.1" min="0" max="24" name="sleep_hours" value="{{ form_state.sleep_hours if form_state else '7.5' }}" placeholder="e.g. 7.5" required>
             </div>
 
             <div class="form-group">
-                <label>Sample Question Papers Practiced:</label>
-                <input type="number" min="0" max="50" name="papers_practiced" placeholder="e.g. 4" required>
+                <label>Exam Practice Level (Sample Papers):</label>
+                <select name="papers_practiced" required>
+                    <option value="high" {% if form_state and form_state.papers_practiced == 'high' %}selected{% endif %}>High Practice (5+ Sample Papers)</option>
+                    <option value="moderate" {% if not form_state or form_state.papers_practiced == 'moderate' %}selected{% endif %}>Moderate Practice (2 - 4 Sample Papers)</option>
+                    <option value="minimal" {% if form_state and form_state.papers_practiced == 'minimal' %}selected{% endif %}>Minimal / None (0 - 1 Sample Paper)</option>
+                </select>
             </div>
 
             <div class="form-group">
                 <label>Extracurricular Activities:</label>
                 <select name="extracurriculars">
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
+                    <option value="Yes" {% if not form_state or form_state.extracurriculars == 'Yes' %}selected{% endif %}>Yes</option>
+                    <option value="No" {% if form_state and form_state.extracurriculars == 'No' %}selected{% endif %}>No</option>
                 </select>
             </div>
 
