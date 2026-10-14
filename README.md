@@ -1,165 +1,233 @@
-# 📊 Student Performance Prediction System
+# Student Performance Prediction System 📊
 
-An end-to-end Machine Learning web application designed to predict a student's **Academic Performance Index (0–100)** based on study habits, previous scores, lifestyle factors, and exam preparation level. 
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/ML-Scikit--Learn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white" alt="Scikit-learn" />
+  <img src="https://img.shields.io/badge/Web-Flask-000000?style=for-the-badge&logo=flask&logoColor=white" alt="Flask" />
+</p>
 
-Built with **Python**, **Scikit-Learn**, and **Flask**, the system features automated feature scaling and encoding, multi-model evaluation, pipeline serialization, interactive Chart.js visualizations, percentile ranking, academic risk classification, and personalized study recommendations.
+> An end-to-end machine learning project that estimates a student's **Performance Index (0–100)** from study habits, previous assessment scores, sleep, exam practice, and extracurricular participation.
 
----
+This project combines data preprocessing, regression model training and evaluation, serialized model inference, and a Flask web interface. It also provides a rule-based academic risk category and study recommendations based on the entered student profile.
 
-## 🌟 Key Features
+## ✨ Features
 
-- ⚙️ **Modular ML Pipeline**: Robust pipeline architecture with separate components for data ingestion, transformation, training, model evaluation, and inference.
-- 🤖 **Multi-Model Evaluation**: Evaluates Linear Regression, Random Forest, and Gradient Boosting algorithms, automatically selecting and serializing the model with the highest $R^2$ score.
-- 🌐 **Interactive Flask Web Application**: Clean, responsive frontend for users to input study parameters and receive immediate feedback.
-- 📈 **Percentile Ranking & Score Distribution**: Calculates exact percentile standing against 10,000 historical records and visualizes score frequencies with an interactive **Chart.js** histogram.
-- 🛡️ **Academic Risk Assessment**: Categorizes student outcomes into *Low Risk*, *Medium Risk*, or *High Risk*.
-- 💡 **Dynamic Personalized Recommendations**: Generates tailored study recommendations based on input habits (e.g., study hours, sleep duration, sample paper practice).
-- 📜 **Centralized Logging & Custom Exceptions**: Enterprise-grade exception tracking and file-based logging system.
+- **Performance prediction:** Estimates a numerical Performance Index from student-related inputs.
+- **Model training and comparison:** Trains and evaluates regression models, including Linear Regression, Random Forest, and Gradient Boosting in the standalone training script.
+- **Reusable preprocessing:** Applies numerical scaling and categorical encoding through a scikit-learn preprocessing pipeline.
+- **Web interface:** Enter student details through a Flask-powered interface.
+- **Academic risk category:** Maps the predicted score to Low, Medium, or High Risk labels.
+- **Personalized suggestions:** Generates rule-based study recommendations from study hours, prior scores, sleep, practice papers, and extracurricular activity.
+- **CLI prediction:** Run a sample prediction in the terminal.
+- **Engineering utilities:** Modular source code, logging, custom exceptions, and serialized model artifacts support the ML workflow.
 
----
+> **Important:** Predictions are model estimates, not guarantees of academic outcomes. Risk labels and recommendations are project-specific heuristics and should not be treated as a validated educational or psychological assessment.
 
-## 📐 System Architecture
+## 🧰 Tech Stack
+
+| Area | Tools |
+| --- | --- |
+| Language | Python |
+| Data handling | Pandas, NumPy |
+| Machine learning | scikit-learn, CatBoost, XGBoost |
+| Web application | Flask |
+| Visualization / experiments | Matplotlib, Seaborn |
+| Model persistence | Serialized artifacts using the project's utility functions |
+
+## 🧾 Input Features
+
+The training workflow expects these columns in the dataset:
+
+| Feature | Meaning |
+| --- | --- |
+| `Hours Studied` | Study hours recorded for the student |
+| `Previous Scores` | Score in previous assessments |
+| `Extracurricular Activities` | Categorical `Yes` / `No` value |
+| `Sleep Hours` | Average hours of sleep |
+| `Sample Question Papers Practiced` | Number of sample papers practiced |
+| `Performance Index` | Target value used during training |
+
+The target column is `Performance Index`; it is not an input feature at inference time. The exact dataset schema and row count should be confirmed against the CSV included with your local checkout.
+
+## 🏗️ How It Works
+
+```text
+Student_Performance.csv
+        │
+        ▼
+Data ingestion / train-test split
+        │
+        ▼
+Preprocessing
+  ├── StandardScaler for numeric features
+  └── OneHotEncoder for extracurricular activity
+        │
+        ▼
+Train and evaluate regression models
+        │
+        ▼
+Save model / preprocessing artifacts
+        │
+        ▼
+Flask form or CLI input
+        │
+        ▼
+Performance Index prediction
+        │
+        ▼
+Risk category + study recommendations
+```
+
+Preprocessing is fitted on training data and then applied to test data in the training workflow. Keeping transformations alongside model inference helps make sure input features are processed consistently.
+
+## 📁 Project Structure
+
+The repository contains both standalone training/prediction scripts and a modular ML package. The key files include:
 
 ```text
 Student-Performance-Prediction/
-├── artifacts/                  # Model artifacts and serialized preprocessors (.pkl)
-│   └── model.pkl
-├── data/                       # Dataset directory
-│   └── Student_Performance.csv
-├── templates/                  # HTML templates for the Flask app
-│   └── index.html
-├── src/                        # Modular source code package
-│   ├── components/
-│   │   ├── Data_ingestion.py       # Data split & ingestion handler
-│   │   ├── Data_transformation.py  # ColumnTransformer & feature scaling
-│   │   └── Model_trainer.py        # Model training & hyperparameter evaluation
-│   ├── pipeline/
-│   │   ├── Training_pipeline.py    # End-to-end training trigger
-│   │   └── predict_pipeline.py     # Prediction pipeline & risk heuristics
-│   ├── exception.py            # Custom exception handling
-│   ├── logger.py               # Application logger setup
-│   └── utils.py                # Helper utilities (save/load artifacts)
-├── app.py                      # Flask web server entry point
-├── train.py                    # Standalone training script
-├── predict.py                  # Standalone CLI prediction script
-├── requirements.txt            # Project dependencies
-└── setup.py                    # Package metadata & distribution setup
+├── data/                         # Training dataset
+├── Artifacts/                    # Stored model/data artifacts (case may matter by environment)
+├── Notebook_Experiments/         # Exploratory experiments
+├── src/
+│   ├── components/               # Data processing and model training components
+│   ├── pipeline/                 # Training and prediction pipelines
+│   ├── exception.py               # Custom exception handling
+│   ├── logger.py                  # Logging configuration
+│   └── utils.py                   # Helper utilities
+├── templates/                    # Flask HTML templates
+├── static/                       # Frontend assets
+├── app.py                        # Flask web application
+├── train.py                      # Standalone model training/evaluation
+├── predict.py                    # CLI prediction example
+├── requirements.txt               # Python dependencies
+├── setup.py                      # Package configuration
+├── Architecture.md               # More detailed architecture notes
+└── README.md
 ```
 
----
-
-## 📋 Dataset & Feature Schema
-
-The underlying model is trained on the Kaggle **Student Performance Dataset** consisting of 10,000 records.
-
-| Feature Name | Type | Description |
-| :--- | :--- | :--- |
-| **Hours Studied** | Continuous | Total hours spent studying per day (0–24) |
-| **Previous Scores** | Continuous | Scores achieved in previous assessments (0–100%) |
-| **Extracurricular Activities** | Categorical | Participation in co-curricular activities (`Yes` / `No`) |
-| **Sleep Hours** | Continuous | Average nightly sleep hours (0–24) |
-| **Sample Question Papers Practiced** | Continuous / Categorical | Count of sample/past exam papers solved |
-| **Performance Index** *(Target)* | Continuous | Target Academic Performance Metric (10.0–100.0) |
-
----
-
-## 🛠️ Data Preprocessing & Modeling Strategy
-
-1. **Preprocessing Pipeline**:
-   - **Numerical Features** (`Hours Studied`, `Previous Scores`, `Sleep Hours`, `Sample Question Papers Practiced`): Scaled using `StandardScaler`.
-   - **Categorical Features** (`Extracurricular Activities`): Encoded using `OneHotEncoder(drop='first')`.
-   - Both scaling and encoding steps are bundled inside a `ColumnTransformer` to prevent data leakage during training and inference.
-
-2. **Model Evaluation & Metrics**:
-   - Models are evaluated on unseen test data using **Mean Absolute Error (MAE)**, **Root Mean Squared Error (RMSE)**, and **R-Squared ($R^2$) Score**.
-   - The optimal pipeline achieving the highest $R^2$ score is serialized into `artifacts/model.pkl` using `joblib` / `dill`.
-
----
-
-## 🚀 Quick Start Guide
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Python **3.8+**
+- Python 3.9 or newer recommended
 - Git
+- A terminal or command prompt
 
-### 1. Clone the Repository
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/AshutoshBunkar/New_ML.git
-cd Student-Perfomance-Prediction
+git clone https://github.com/AshutoshBunkar/Student-Performance-Prediction.git
+cd Student-Performance-Prediction
 ```
 
-### 2. Set Up Virtual Environment & Install Dependencies
+### 2. Create and activate a virtual environment
+
+**Windows (PowerShell)**
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+**Windows (Command Prompt)**
+
+```bat
+python -m venv .venv
+.venv\Scripts\activate.bat
+```
+
+**Linux / macOS**
 
 ```bash
-# Create virtual environment
-python -m venv env
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-# Activate virtual environment
-# Windows:
-env\Scripts\activate
-# Linux/macOS:
-source env/bin/activate
+### 3. Install dependencies
 
-# Upgrade pip and install dependencies
+```bash
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
----
+The requirements file installs the project in editable mode using `-e .`. If installation fails, check that your Python version is compatible with the installed dependency versions.
 
-## 🏃 Running the Application
+## 🧪 Train the Model
 
-### A. Run via Flask Web Server
+Make sure the CSV exists in the `data/` directory and includes the expected feature columns and `Performance Index` target.
 
-1. Start the Flask application server:
-   ```bash
-   python app.py
-   ```
-   *Terminal Output:*
-   ```text
-   =======================================================
-    🚀 Starting Student Performance Prediction Web Server
-    🌐 Server URL: http://127.0.0.1:5000
-   =======================================================
-   ```
-2. Open your web browser and navigate to the printed Server URL (`http://127.0.0.1:5000`).
-3. Enter student parameters in the web form to get instantaneous score predictions, risk classification, percentile standing, and study recommendations.
+Run the standalone training script:
 
+```bash
+python train.py
+```
 
-### B. Run Standalone Inference (CLI Script)
+The script splits the data into training and test sets, constructs preprocessing and regression pipelines, evaluates model performance using MAE, RMSE and R², and saves the selected model artifact.
 
-You can run direct CLI predictions without opening the browser:
+The repository also contains a modular training pipeline under `src/pipeline/`. Refer to [Architecture.md](Architecture.md) for additional implementation details.
+
+> Train the model before running inference if the required trained artifact is not already available. Model artifact paths and capitalization must match the paths expected by the source code on your operating system.
+
+## 🌐 Run the Web App
+
+After the trained artifact is available, start Flask:
+
+```bash
+python app.py
+```
+
+Open the local address printed by Flask (typically [http://127.0.0.1:5000](http://127.0.0.1:5000)) in your browser. Enter the requested student information and submit the form to see the model's prediction, risk category, and recommendations.
+
+Stop the development server with `Ctrl+C`.
+
+## 💻 Run a CLI Prediction
+
 ```bash
 python predict.py
 ```
 
-*Sample CLI Output:*
-```text
-==========================================
-       STUDENT PERFORMANCE REPORT         
-==========================================
-Predicted Performance Index : 88.50 / 100
-Academic Risk Level         : Low Risk (High Performance)
+The example script prepares a sample student profile, loads the serialized model through the prediction pipeline, prints the predicted Performance Index, and displays the project's risk label and recommendations.
 
-Personalized Recommendations:
- - Maintain the current excellent study routine and academic habits!
-==========================================
-```
+## 📏 Evaluation Metrics
 
-### C. Retrain / Evaluate Models
+The training code evaluates regression models using:
 
-To run the training pipeline and evaluate model metrics:
-```bash
-python train.py
-```
-*or execute the modular training pipeline:*
-```bash
-python -m src.pipeline.Training_pipeline
-```
+- **MAE (Mean Absolute Error):** Average absolute difference between predictions and actual targets.
+- **RMSE (Root Mean Squared Error):** Penalizes larger prediction errors more heavily than MAE.
+- **R² (Coefficient of Determination):** Measures how much target variation is explained by the model relative to a baseline.
 
----
+No benchmark numbers are included here because performance depends on the dataset, split, feature processing, and installed library versions. Run the training script to obtain metrics for your current checkout.
+
+## 📚 Further Reading
+
+- [scikit-learn documentation](https://scikit-learn.org/stable/)
+- [Flask documentation](https://flask.palletsprojects.com/)
+- [Pandas documentation](https://pandas.pydata.org/docs/)
+- [NumPy documentation](https://numpy.org/doc/)
+- [Project architecture notes](Architecture.md)
+
+## 🔭 Possible Next Steps
+
+- [ ] Add reproducible evaluation results to the README.
+- [ ] Include a screenshot or GIF of the web interface.
+- [ ] Add input validation and clearer user-facing error messages.
+- [ ] Document model artifact generation and expected artifact paths in one place.
+- [ ] Add tests for preprocessing, prediction, and risk classification.
+- [ ] Pin tested dependency versions for easier reproduction.
+
+## 👨‍💻 Author
+
+**Ashutosh Bunkar**
+
+GitHub: [@AshutoshBunkar](https://github.com/AshutoshBunkar)
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+This repository includes a [LICENSE](LICENSE) file. Review it for the applicable terms.
+
+---
+
+<p align="center">
+  <i>Turning ML practice into a reproducible, end-to-end project.</i>
+</p>
